@@ -15,10 +15,15 @@ util.resolve_work_path = function(patterns)
     return (root == nil or #root == 0) and cwd or root
 end
 
+---@return string
+util.get_lsp_installed_path = function()
+    return require('nvim-lsp-installer.settings').current.install_root_dir
+end
+
 ---@param path string the relative path relative to lsp server installation path
 ---@return string path the absolute path of lsp execuble file
 util.resolve_lsp_execuble = function(path)
-    local lsp_installed_path = vim.fn.stdpath('data') .. '/lsp_servers/'
+    local lsp_installed_path = util.get_lsp_installed_path()
     return is_absolute_path(path) and path or lsp_installed_path .. path
 end
 

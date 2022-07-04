@@ -30,17 +30,19 @@ M.setup = function(config)
     M.config = vim.tbl_extend('keep', config, M.config)
 
     local json_decode = vim.fn.json_decode
+    -- TODO: determine the file is empty or not
     local user_config = string.format('%s/.config/nvim/languages.json', util.resolve_work_path(M.config.root_patterns))
 
+    -- TODO: use `pcall` to handle the failure of json decoding
     local default_confs = vim.fn.filereadable(M.config.default_config_path)
             and json_decode(io.open(M.config.default_config_path, 'r'):read('*a'))
         or {}
     local user_confs = vim.fn.filereadable(user_config) and json_decode(io.open(user_config, 'r'):read('*a')) or {}
 
     if M.config.mode == 'user-first' then
-        M.servers = vim.tbl_extend('keep', default_confs['languages'], user_confs['languages'])
+        M.servers = vim.tbl_extend('force', default_confs['languages'], user_confs['languages'])
     elseif M.config.mode == 'default-first' then
-        M.servers = vim.tbl_extend('keep', user_confs['languages'], default_confs['languages'])
+        M.servers = vim.tbl_extend('force', user_confs['languages'], default_confs['languages'])
     elseif M.config.mode == 'user-only' then
         M.servers = user_confs['languages']
     elseif M.config.mode == 'default-only' then
