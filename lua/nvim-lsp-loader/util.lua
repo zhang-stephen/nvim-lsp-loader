@@ -27,6 +27,12 @@ util.resolve_lsp_execuble = function(path)
     return is_absolute_path(path) and path or lsp_installed_path .. path
 end
 
+---@param path string
+---@return boolean
+util.filereadable = function(path)
+    return vim.fn.filereadable(path) == 1
+end
+
 ---@param t table
 ---@return boolean
 util.is_array = function(t)

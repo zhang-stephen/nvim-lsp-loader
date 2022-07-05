@@ -77,6 +77,13 @@ local load_server = function(lang, server, plugin_conf)
     return true
 end
 
+---@param data string data to be decoded
+---@return table | nil
+loader.json_decode = function(data)
+    local ok, result = pcall(vim.fn.json_decode, data)
+    return ok and result or nil
+end
+
 ---@param servers table configurations of all servers read from json
 loader.load_servers = function(servers, plugin_conf)
     for lang, server in pairs(servers) do
