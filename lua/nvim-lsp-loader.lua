@@ -39,7 +39,7 @@ local M = {
             },
         },
         loaded_servers = {},
-    }
+    },
 }
 
 ---@param path string the file to read/load

@@ -4,7 +4,12 @@ local util = {}
 ---@return boolean
 local is_absolute_path = function(path)
     local os_name = vim.loop.os_uname().sysname
-    return os_name == 'Windows_NT' and path[2] == ':' or path[1] == ''
+
+    if os_name == 'Windows_NT' then
+        return path[2] == ':'
+    else
+        return path[1] == '/'
+    end
 end
 
 ---@param patterns table<string> | nil
@@ -24,32 +29,13 @@ end
 ---@return string path the absolute path of lsp execuble file
 util.resolve_lsp_execuble = function(path)
     local lsp_installed_path = util.get_lsp_installed_path()
-    return is_absolute_path(path) and path or lsp_installed_path .. path
+    return is_absolute_path(path) and path or lsp_installed_path .. '/' .. path
 end
 
 ---@param path string
 ---@return boolean
 util.filereadable = function(path)
     return vim.fn.filereadable(path) == 1
-end
-
----@param t table
----@return boolean
-util.is_array = function(t)
-    if type(t) ~= 'table' then
-        return false
-    end
-
-    local i = 1
-
-    for _ in pairs(t) do
-        if t[i] == nil then
-            return false
-        end
-        i = i + 1
-    end
-
-    return true
 end
 
 return util
