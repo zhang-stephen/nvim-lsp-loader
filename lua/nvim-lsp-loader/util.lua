@@ -38,4 +38,33 @@ util.filereadable = function(path)
     return vim.fn.filereadable(path) == 1
 end
 
+---@return boolean
+util.has_nvim = function()
+    local ok, _ = pcall(vim.fn.has, 'nvim')
+    return ok
+end
+
+---@param t table
+---@return boolean
+util.is_array = function(t)
+    if type(t) ~= 'table' then
+        return false
+    end
+
+    if util.has_nvim() then
+        return vim.tbl_islist(t)
+    end
+
+    local i = 1
+
+    for _ in pairs(t) do
+        if t[i] == nil then
+            return false
+        end
+        i = i + 1
+    end
+    
+    return true
+end
+
 return util
