@@ -63,7 +63,7 @@ util.is_array = function(t)
         end
         i = i + 1
     end
-    
+
     return true
 end
 

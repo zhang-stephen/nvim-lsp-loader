@@ -12,7 +12,7 @@ end
 
 ---@param t table
 ---@return table
-json.inflate = function (t)
+json.inflate = function(t)
     local res = {}
 
     -- if t is list or not a table, return it directly
@@ -37,7 +37,7 @@ json.inflate = function (t)
             -- the cursor has arrived the deepest of the table,
             -- and the value will be assigned to the deepest key.
             if i == #keys then
-                if type(val) == "table" then
+                if type(val) == 'table' then
                     for _1, _2 in pairs(val) do
                         cursor[k][_1] = _2
                     end
