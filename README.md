@@ -36,6 +36,9 @@ use {
             ---@type string | nil where to find the default server configuations, could be nil
             default_config_path = '~/.config/nvim/languages.json',
 
+            ---@type boolean support nested json keys or not, default is false
+            nested_json_keys = false,
+
             ---@type table<string> the patterns to detect the root of project
             root_patterns = { '.git/' },
 
@@ -49,7 +52,8 @@ use {
             make_capabilities = nil,
 
             ---@type function | nil callback for resolving server configuration, would be invoked before server setup
-            -- accept server name and server config as input
+            ---@param name string the name of language server
+            ---@param config table the configuration table of language server
             server_config_cb = nil,
 
             -- work mode, must be one of {'user-first', 'user-only', 'default-first', 'default-only'}
