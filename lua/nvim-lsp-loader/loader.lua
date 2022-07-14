@@ -24,7 +24,7 @@ local resolve_server_conf = function(server, on_attach, make_capabilities, updat
 
     -- use this callback for user-defined operations
     if update_config_cb then
-        update_config_cb(config)
+        update_config_cb(server.name, config)
     end
 end
 
@@ -48,7 +48,7 @@ end
 
 ---@param lang string the name of language
 ---@param server table server configuration read from json
----@param plugin_conf table configuratio of plugin itself
+---@param plugin_conf table configuration of plugin itself
 ---@return boolean
 local load_server = function(lang, server, plugin_conf)
     local type_of_server_config = type(server.config)
@@ -58,7 +58,7 @@ local load_server = function(lang, server, plugin_conf)
     end
 
     if type_of_server_config == 'table' then
-        resolve_server_conf(server, plugin_conf.on_attach, plugin_conf.make_capabilities, plugin_conf.config_cb)
+        resolve_server_conf(server, plugin_conf.on_attach, plugin_conf.make_capabilities, plugin_conf.server_config_cb)
         lsp[server.name].setup(server.config)
     elseif type_of_server_config == 'string' then
         -- TODO: to support load user-defined .lua files
@@ -77,14 +77,8 @@ local load_server = function(lang, server, plugin_conf)
     return true
 end
 
----@param data string data to be decoded
----@return table | nil
-loader.json_decode = function(data)
-    local ok, result = pcall(vim.fn.json_decode, data)
-    return ok and result or nil
-end
-
 ---@param servers table configurations of all servers read from json
+---@param plugin_conf table configurations of plugin itself
 loader.load_servers = function(servers, plugin_conf)
     for lang, server in pairs(servers) do
         local loaded = load_server(lang, server, plugin_conf)

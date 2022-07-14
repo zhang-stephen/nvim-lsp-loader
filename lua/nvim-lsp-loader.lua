@@ -5,6 +5,8 @@ local M = {
     config = {
         ---@type boolean just for debug, not used yet
         debug = false,
+        ---@type boolean
+        nested_json_keys = false,
         ---@type string ~/.config/nvim/languages.json
         default_config_path = vim.fn.stdpath('config') .. '/languages.json',
         ---@type table<string>
@@ -25,6 +27,8 @@ local M = {
     ---@type table
     loader = require('nvim-lsp-loader.loader'),
     ---@type table
+    json = require('nvim-lsp-loader.json'),
+    ---@type table
     recorder = {
         confs = {
             default = {
@@ -42,19 +46,29 @@ local M = {
     },
 }
 
+---@param resource string one of default and user
+---@return table
+M.get_recorder = function(resource)
+    return M.recorder.confs[resource]
+end
+
 ---@param path string the file to read/load
 ---@return table | nil
 M.read_configuration = function(path)
     local resource = path == M.config.default_config_path and 'default' or 'user'
-    M.recorder.confs[resource].path = path
-    M.recorder.confs[resource].readable = util.filereadable(path)
+    M.get_recorder(resource).path = path
+    M.get_recorder(resource).readable = util.filereadable(path)
 
-    if not M.recorder.confs[resource].readable then
+    if not M.get_recorder(resource).readable then
         return nil
     end
 
-    local conf = M.loader.json_decode(io.open(path, 'r'):read('*a'))
+    local conf = M.json.decode(io.open(path, 'r'):read('*a'))
     M.recorder.confs[resource].decoded = conf ~= nil
+
+    if M.config.nested_json_keys and M.get_recorder(resource).decoded then
+        conf = M.json.inflate(conf)
+    end
 
     return conf
 end
