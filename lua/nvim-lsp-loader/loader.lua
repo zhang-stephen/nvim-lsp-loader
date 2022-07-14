@@ -24,7 +24,7 @@ local resolve_server_conf = function(server, on_attach, make_capabilities, updat
 
     -- use this callback for user-defined operations
     if update_config_cb then
-        update_config_cb(config)
+        update_config_cb(server.name, config)
     end
 end
 
@@ -58,7 +58,7 @@ local load_server = function(lang, server, plugin_conf)
     end
 
     if type_of_server_config == 'table' then
-        resolve_server_conf(server, plugin_conf.on_attach, plugin_conf.make_capabilities, plugin_conf.config_cb)
+        resolve_server_conf(server, plugin_conf.on_attach, plugin_conf.make_capabilities, plugin_conf.server_config_cb)
         lsp[server.name].setup(server.config)
     elseif type_of_server_config == 'string' then
         -- TODO: to support load user-defined .lua files

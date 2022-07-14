@@ -9,7 +9,7 @@ This plugin is inspired by [coc.nvim](https://github.com/neoclide/coc.nvim) and 
 ### Highlight of Features
 
 - [x] Load default server configurations from specific path, e.g. `~/.config/nvim/languages.json`,
-- [x] Find the `.config/nvim/languages.json` in the root path of porject, or current work directory, and load it,
+- [x] Find the `.nvim/languages.json` in the root path of porject, or current work directory, and load it,
 - [x] highly customized lsp,
 - [ ] Support load servers from `.lua` files,
 - [ ] Provide user command to load specific server configuration from configuration,
@@ -33,19 +33,22 @@ use {
     config = function()
         -- DEFAULT CONFIGURATION
         require('nvim-lsp-loader').setup({
-            -- where to find the default server configuations, could be nil
+            ---@type string | nil where to find the default server configuations, could be nil
             default_config_path = '~/.config/nvim/languages.json',
 
-            -- the patterns to detect the root of project
+            ---@type table<string> the patterns to detect the root of project
             root_patterns = { '.git/' },
 
-            -- callback when server is attached to buffer, could be nil
+            ---@type function | nil callback when server is attached to buffer, could be nil
+            ---@param client_id integer
+            ---@param bufnr integer
             on_attach = nil,
 
-            -- to overwrite the capabilities of server, could be nil
+            ---@type function | nil to overwrite the capabilities of server, could be nil
+            ---@return table language server capabilities
             make_capabilities = nil,
 
-            -- callback for resolving server configuration, would be invoked before server setup
+            ---@type function | nil callback for resolving server configuration, would be invoked before server setup
             -- accept server name and server config as input
             server_config_cb = nil,
 
@@ -164,6 +167,8 @@ __NOTICE:__ Comments is not supported in many json decoder.
     }
 }
 ```
+
+Another example from my neovim configuration: [Click Here](https://github.com/zhang-stephen/dotfiles-on-unix-like/blob/master/nvim/languages.json).
 
 #### How the configuration to be loaded?
 
