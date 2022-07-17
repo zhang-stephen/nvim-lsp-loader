@@ -1,5 +1,7 @@
 # nvim-lsp-loader
 
+[English](https://github.com/zhang-stephen/nvim-lsp-loader/README.md) | [中文](https://blogs.stephen-zhang.cn/post/7853fa04)
+
 Load your language servers from `.json` or `.lua` files from individual projects. It's a wrapper for [nvim-lspconfig](https://github.com/neovim/nvim-lspconfig) and [nvim-lsp-installer](https://github.com/williamboman/nvim-lsp-installer).
 
 There is a [big file](https://github.com/zhang-stephen/dotfiles-on-unix-like/blob/57300d46b26089060868c9926a5a11a6e20f7f63/nvim/lua/modules/lsp/config/languages.lua) to configure my LSP server. I tried to split it to serveral parts but failed, due to [this PR](https://github.com/wbthomason/packer.nvim/pull/192) of  `packer.nvim` is stll in WIP. So I gave up to split this file then, and turned to build a middleware which could load servers from static configuration files.
@@ -135,9 +137,8 @@ __NOTICE:__ Comments is not supported in many json decoder.
         // other examples for jsonls/clangd
         "json": {
             "name": "jsonls",
-            "managed_by": {
-                "lsp_installer": true
-            }
+            // nested keys in json is supported if nested_json_keys was set to true
+            "managed_by.lsp_installer": true,
             "config": {
                 "cmd": [
                     // will be converted to absolute path
@@ -187,3 +188,8 @@ It will read server configuration from `default_config_path` and `<proj_root>/.c
 + Or configuration from `<proj_root>` will be ignored if the mode is 'default-only'.
 
 Then the servers should be configured automatically.
+
+
+### Code Contributions
+
+This plugin is open-sourced under MIT license. Welcome for all PRs, issues, and great/cool ideas!
