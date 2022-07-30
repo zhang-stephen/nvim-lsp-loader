@@ -1,27 +1,9 @@
 local util = require('nvim-lsp-loader.util')
+local log = require('nvim-lsp-loader.logging')
 
 local M = {
     ---@type table<string, ...>
-    config = {
-        ---@type boolean just for debug, not used yet
-        debug = false,
-        ---@type boolean
-        nested_json_keys = false,
-        ---@type string ~/.config/nvim/languages.json
-        default_config_path = vim.fn.stdpath('config') .. '/languages.json',
-        ---@type table<string>
-        root_patterns = {
-            '.git/',
-        },
-        ---@type function | nil
-        on_attach = nil,
-        ---@type function | nil
-        make_capabilities = nil,
-        ---@type function | nil
-        server_config_cb = nil,
-        ---@type string
-        mode = 'user-first',
-    },
+    config = {},
     ---@type table
     servers = {},
     ---@type table
@@ -74,7 +56,7 @@ M.read_configuration = function(path)
 end
 
 M.setup = function(config)
-    M.config = vim.tbl_extend('keep', config, M.config)
+    M.config = require('nvim-lsp-loader.settings').resolve(config)
 
     local user_config_path = string.format('%s/.nvim/languages.json', util.resolve_work_path(M.config.root_patterns))
     local default_confs = M.read_configuration(M.config.default_config_path)
@@ -97,7 +79,7 @@ M.setup = function(config)
     end
 
     if M.servers == {} or M.servers == nil then
-        vim.notify('No Language Server has been Configured', 'info')
+        log.info('No Language Server has been Configured')
         return
     end
 
