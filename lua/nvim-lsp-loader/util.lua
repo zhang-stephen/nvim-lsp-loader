@@ -1,17 +1,5 @@
 local util = {}
 
----@param path string
----@return boolean
-local is_absolute_path = function(path)
-    local os_name = vim.loop.os_uname().sysname
-
-    if os_name == 'Windows_NT' then
-        return path[2] == ':'
-    else
-        return path[1] == '/'
-    end
-end
-
 ---@param patterns table<string> | nil
 ---@return string path
 util.resolve_work_path = function(patterns)
@@ -20,16 +8,16 @@ util.resolve_work_path = function(patterns)
     return (root == nil or #root == 0) and cwd or root
 end
 
----@return string
-util.get_lsp_installed_path = function()
-    return require('nvim-lsp-installer.settings').current.install_root_dir
-end
+---@param managed boolean if this server is managed by mason.nvim
+---@param registry string the canocial name of mason.nvim
+---@param options table<string> the command and options for server
+util.resolve_executable = function(managed, registry, options)
+    if not managed then
+        return options
+    end
 
----@param path string the relative path relative to lsp server installation path
----@return string path the absolute path of lsp execuble file
-util.resolve_lsp_execuble = function(path)
-    local lsp_installed_path = util.get_lsp_installed_path()
-    return is_absolute_path(path) and path or lsp_installed_path .. '/' .. path
+    local mason_install_path = require('mason.settings').current.install_root_dir
+    options[1] = string.format('%s/bin/%s', mason_install_path, registry)
 end
 
 ---@param path string
@@ -51,20 +39,7 @@ util.is_array = function(t)
         return false
     end
 
-    if util.has_nvim() then
-        return vim.tbl_islist(t)
-    end
-
-    local i = 1
-
-    for _ in pairs(t) do
-        if t[i] == nil then
-            return false
-        end
-        i = i + 1
-    end
-
-    return true
+    return vim.tbl_islist(t)
 end
 
 return util

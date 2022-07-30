@@ -1,5 +1,6 @@
 local util = require('nvim-lsp-loader.util')
 
+
 local M = {
     ---@type table<string, ...>
     config = {},
