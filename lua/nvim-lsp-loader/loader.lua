@@ -1,7 +1,6 @@
 local loader = {}
 local lspconfig_to_registry = require('nvim-lsp-loader.mappings.servers')
-local info = require('nvim-lsp-loader.logging').info
-local error = require('nvim-lsp-loader.logging').error
+local log = require('nvim-lsp-loader.logging')
 local settings = require('nvim-lsp-loader.settings').current
 
 ---@param server table the user configuration of language server
@@ -38,17 +37,17 @@ local post_load_server = function(lang, server) end
 ---@param version string | nil the version string of server
 local install_server = function(package, version)
     if version ~= nil then
-        info(string.format('%s: updating to %s', package.name, version))
+        log.info(string.format('%s: updating to %s', package.name, version))
     else
-        info(string.format('%s: installing', package.name))
+        log.info(string.format('%s: installing', package.name))
     end
 
     package:on('install:success', function(...)
-        info(string.format('%s: installed successfully', package.name))
+        log.info(string.format('%s: installed successfully', package.name))
     end)
 
     package:on('install:failed', function(...)
-        error(string.format('%s: installed failed!', package.name))
+        log.error(string.format('%s: installed failed!', package.name))
     end)
 
     package:install({
@@ -73,6 +72,7 @@ local check_and_install = function(server)
     end
 
     if p:is_installed() then
+        -- TODO: update/change version should be done with async?
         if version ~= nil then
             p:get_installed_version(function(ok, installed_version)
                 if ok and version ~= installed_version then
@@ -105,9 +105,9 @@ local load_server = function(lang, server)
         lsp[server.name].setup(server.config)
     elseif type_of_server_config == 'string' then
         -- TODO: to support load user-defined .lua files
-        error(string.format('configuration for %s in string format not supported yet!', lang))
+        log.error(string.format('configuration for %s in string format not supported yet!', lang))
     else
-        error(
+        log.error(
             string.format(
                 'unsupport type of language server configuartion %s, expected is table or string(path)',
                 type_of_server_config

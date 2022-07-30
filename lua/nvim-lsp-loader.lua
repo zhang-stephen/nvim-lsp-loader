@@ -1,5 +1,5 @@
 local util = require('nvim-lsp-loader.util')
-
+local log = require('nvim-lsp-loader.logging')
 
 local M = {
     ---@type table<string, ...>
@@ -79,7 +79,7 @@ M.setup = function(config)
     end
 
     if M.servers == {} or M.servers == nil then
-        vim.notify('No Language Server has been Configured', 'info')
+        log.info('No Language Server has been Configured')
         return
     end
 
