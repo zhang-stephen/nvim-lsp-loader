@@ -8,7 +8,7 @@ local settings = require('nvim-lsp-loader.settings').current
 ---@param make_capabilities function server capabilities
 ---@param update_config_cb function callback after update language server configuartion
 local resolve_server_conf = function(server, on_attach, make_capabilities, update_config_cb)
-    local config = server.config
+    local config = server.config and server.config or {}
     local util = require('nvim-lsp-loader.util')
     local root_pattern = require('lspconfig.util').root_pattern
 
@@ -95,22 +95,23 @@ end
 ---@param server table server configuration read from json
 ---@return boolean
 local load_server = function(lang, server)
-    local type_of_server_config = type(server.config)
+    local type_of_config = type(server.config)
     local lsp = require('lspconfig')
 
     check_and_install(server)
 
-    if type_of_server_config == 'table' then
+    if type_of_config == 'table' or type_of_config == 'nil' then
         resolve_server_conf(server, settings.on_attach, settings.make_capabilities, settings.server_config_cb)
         lsp[server.name].setup(server.config)
-    elseif type_of_server_config == 'string' then
+    elseif type_of_config == 'string' then
         -- TODO: to support load user-defined .lua files
         log.error(string.format('configuration for %s in string format not supported yet!', lang))
     else
         log.error(
             string.format(
-                'unsupport type of language server configuartion %s, expected is table or string(path)',
-                type_of_server_config
+                'unsupport type %s of language server configuartion %s, expected is table or string(path)',
+                type_of_config,
+                server.name
             )
         )
         return false

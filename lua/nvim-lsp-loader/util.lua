@@ -16,8 +16,8 @@ util.resolve_executable = function(managed, registry, options)
         return options
     end
 
-    local mason_install_path = require('mason.settings').current.install_root_dir
-    options[1] = string.format('%s/bin/%s', mason_install_path, registry)
+    local mason_bin_path = require('mason.settings').current.install_root_dir .. '/bin'
+    options[1] = string.format('%s/%s', mason_bin_path, registry)
 end
 
 ---@param path string
