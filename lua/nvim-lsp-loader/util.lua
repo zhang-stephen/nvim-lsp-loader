@@ -16,8 +16,11 @@ util.resolve_executable = function(managed, registry, options)
         return options
     end
 
+    -- HACK: this is not open API from mason.nvim, risk!
+    local mr = string.format('mason-registry.%s', registry)
+    local executable = vim.tbl_keys(require(mr):get_receipt()._value.links.bin)[1]
     local mason_bin_path = require('mason.settings').current.install_root_dir .. '/bin'
-    options[1] = string.format('%s/%s', mason_bin_path, registry)
+    options[1] = string.format('%s/%s', mason_bin_path, executable)
 end
 
 ---@param path string
