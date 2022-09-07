@@ -3,7 +3,7 @@ local logging = {}
 local ok, notify = pcall(require, 'notify')
 local notif = ok and notify or vim.notify
 local notopt = ok and {
-    title = 'nvim-lsp-loader'
+    title = 'nvim-lsp-loader',
 } or nil
 
 ---@param msg string the debug string to show

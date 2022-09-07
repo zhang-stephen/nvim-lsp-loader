@@ -8,7 +8,7 @@ local settings = require('nvim-lsp-loader.settings').current
 ---@param make_capabilities function server capabilities
 ---@param update_config_cb function callback after update language server configuartion
 local resolve_server_conf = function(server, on_attach, make_capabilities, update_config_cb)
-    local config = server.config and server.config or {}
+    local config = type(server.config) == 'table' and server.config or {}
     local util = require('nvim-lsp-loader.util')
     local root_pattern = require('lspconfig.util').root_pattern
 
@@ -27,6 +27,9 @@ local resolve_server_conf = function(server, on_attach, make_capabilities, updat
     if update_config_cb then
         update_config_cb(server.name, config)
     end
+
+    -- replace the user configuration
+    server.config = config
 end
 
 ---@param lang string the name of language
@@ -100,7 +103,7 @@ local load_server = function(lang, server)
 
     check_and_install(server)
 
-    if type_of_config == 'table' or type_of_config == 'nil' then
+    if type_of_config == 'table' or type_of_config == 'userdata' or type_of_config == 'nil' then
         resolve_server_conf(server, settings.on_attach, settings.make_capabilities, settings.server_config_cb)
         lsp[server.name].setup(server.config)
     elseif type_of_config == 'string' then
